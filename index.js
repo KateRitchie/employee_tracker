@@ -13,9 +13,9 @@ app.use(express.json());
 // Using mysql2 this logs into the mySQL database
 const db = mysql.createConnection(
   {
-    host: 'localhost',
-    user: '',
-    password: '',
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     database: 'employeesDB'
   },
   console.log(`Connected to the employeesDB database.`)
