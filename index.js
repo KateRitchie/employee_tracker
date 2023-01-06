@@ -1,6 +1,6 @@
 const express = require('express');
 const inquirer = require('inquirer');
-const cTable = require('console.table');
+//const cTable = require('console.table');
 // Import and require mysql2
 const mysql = require('mysql2');
 //Protect SQL login info
@@ -48,6 +48,12 @@ const startTracker = function () {
       })
     } else if (choice.prompt === 'View all roles') {
       db.query(`SELECT * FROM role`, (err, result) => {
+        if (err) throw err;
+        console.table(result);
+        startTracker();
+      })
+    } else if (choice.promt === 'View all employees') {
+      db.query(`SELECT * FROM employee`, (err, result) => {
         if (err) throw err;
         console.table(result);
         startTracker();
