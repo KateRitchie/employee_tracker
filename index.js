@@ -19,12 +19,12 @@ const db = mysql.createConnection(
 
 // Connect database
 db.connect(err => {
-  if(err) throw err;
+  if (err) throw err;
   console.log(`Connected to the employeesDB database.`)
   startTracker();
 });
 
-const startTracker = function() {
+const startTracker = function () {
   inquirer.prompt([{
     type: 'list',
     name: 'prompt',
@@ -42,7 +42,13 @@ const startTracker = function() {
   }]).then((choice) => {
     if (choice.prompt === 'View all departments') {
       db.query(`SELECT * FROM department`, (err, result) => {
-        if(err) throw err;
+        if (err) throw err;
+        console.table(result);
+        startTracker();
+      })
+    } else if (choice.prompt === 'View all roles') {
+      db.query(`SELECT * FROM role`, (err, result) => {
+        if (err) throw err;
         console.table(result);
         startTracker();
       })
