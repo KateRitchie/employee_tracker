@@ -53,7 +53,7 @@ const startTracker = function () {
         startTracker();
       })
     } else if (choice.prompt === 'View all employees') {
-      db.query(`SELECT * FROM employee`, (err, result) => {
+      db.query(`SELECT * FROM employee JOIN role ON employee.role_id = role.id`, (err, result) => {
         if (err) throw err;
         console.table(result);
         startTracker();
@@ -61,11 +61,23 @@ const startTracker = function () {
     } else if (choice.prompt === 'Add a department') {
       inquirer.prompt([{
         type: 'input',
-        name: 'name',
-        message: 'Enter department name'
-      }])
-
-
+        name: 'department',
+        message: 'Enter department name',
+        validate: departmentEnter => {
+          if (departmentEnter) {
+            return true;
+          } else {
+            console.log('You must enter a department name');
+            return false;
+          }
+        }
+      }]).then((choice) => {
+        db.query(`INSERT INTO department (name) VALUES(?)`, [choice.department], (err, result) => {
+          if (err) throw err;
+          console.log('Department added')
+          startTracker()
+        });
+      })
     }
 
 
