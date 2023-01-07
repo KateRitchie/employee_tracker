@@ -167,7 +167,7 @@ const startTracker = function () {
         }, {
           type: 'input',
           name: 'manager',
-          message: 'Enter employee manager leave blank if none',
+          message: 'Enter employee manager id, leave blank if none',
         }, {
           type: 'list',
           name: 'role',
@@ -177,8 +177,8 @@ const startTracker = function () {
             for (let i = 0; i < result.length; i++) {
               roleArr.push(result[i].title);
             }
-            
-            return roleArr;           
+
+            return roleArr;
           }
         }
         ]).then((choice) => {
@@ -187,13 +187,60 @@ const startTracker = function () {
               role = result[i];
             }
           }
-          db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`, [choice.firstName, choice.lastName, role.id, choice.manager.id], (err, result) => {
+          db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`, [choice.firstName, choice.lastName, role.id, choice.manager], (err, result) => {
             if (err) throw err;
             console.log('Added employee')
             startTracker()
           })
         })
-    });
-}
+      });
+    } else if (choice.prompt === 'Update employee role') {
+      //Pull in employee, role table to update employee role
+      db.query(`SELECT * FROM employee, role`, (err, result) => {
+        if (err) throw err;
+        inquirer.prompt([{
+          type: 'list',
+          name: 'employee',
+          message: 'Select employee to update',
+          choices: () => {
+            let eeArr = [];
+            for (let i = 0; i < result.length; i++) {
+              eeArr.push(result[i].first_name);
+            }
+            return eeArr
+          },
+        }, {
+          type: 'list',
+          name: 'role',
+          message: 'Selct new role',
+          choices: () => {
+            let roleArray = [];
+            for (let i = 0; i < result.length; i++) {
+              roleArray.push(result[i].title);
+            }
+            return roleArray;
+          }
+        }]).then((choice) => {
+          for (let i = 0; i < result.length; i++) {
+            if (result[i].first_name === choice.employee) {
+              employee = result[i]
+            }
+          }
+          for (let i = 0; i < result.length; i++) {
+            if (result[i].title === choice.role) {
+              role = result[i]
+            }
+          }
+          db.query(`UPDATE employee SET ? WHERE ?`, [{ role_id: role }, { first_name: employee }], (err, result) => {
+            if (err) throw err;
+            console.log('Employee role updated')
+            startTracker();
+          })
+        })
+      })
+    } else if (choice.prompt === 'Exit') {
+      db.end();
+      console.log("Exit")
+    }
   })
 }
