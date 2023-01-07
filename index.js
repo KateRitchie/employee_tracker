@@ -24,6 +24,7 @@ db.connect(err => {
   startTracker();
 });
 
+//Function to prompt questions, answer questions, and add/view tables
 const startTracker = function () {
   inquirer.prompt([{
     type: 'list',
@@ -63,6 +64,7 @@ const startTracker = function () {
         type: 'input',
         name: 'department',
         message: 'Enter department name',
+        //validating as department name NOT NULL
         validate: departmentEnter => {
           if (departmentEnter) {
             return true;
@@ -78,9 +80,61 @@ const startTracker = function () {
           startTracker()
         });
       })
+    } else if (choice.prompt === 'Add a role') {
+      //Pull in department table for department selection on role
+      db.query(`SELECT * FROM department`, (err, result) => {
+        if (err) throw err;
+        inquirer.prompt([{
+          type: 'input',
+          name: 'role',
+          message: 'Enter role title',
+          //validating as title name NOT NULL
+          validate: roleEnter => {
+            if (roleEnter) {
+              return true;
+            } else {
+              console.log('You must enter a role title');
+              return false;
+            }
+          }
+        }, {
+          type: 'input',
+          name: 'salary',
+          message: 'Enter role salary',
+          //validating as role salary NOT NULL
+          validate: salaryEnter => {
+            if (salaryEnter) {
+              return true;
+            } else {
+              console.log('You must enter a role salary');
+              return false;
+            }
+          }
+        }, {
+          type: 'list',
+          name: 'department',
+          message: 'Select department role falls under',
+          choices: () => {
+            let departmentArr = [];
+            for (let i = 0; i < result.length; i++) {
+              departmentArr.push(result[i].name);
+            }
+            return departmentArr;
+          }
+        }]).then((choice) => {
+          for (let i = 0; i < result.length; i++) {
+            if (result[i].name === choice.department) {
+               department = result[i];
+            }
+          }
+          db.query(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, [choice.role, choice.salary, department.id], (err, result) => {
+            if (err) throw err;
+            console.log('Role added')
+            startTracker();
+          });
+        })
+    });
     }
 
-
   })
-
 }
