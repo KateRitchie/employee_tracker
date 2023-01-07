@@ -124,7 +124,7 @@ const startTracker = function () {
         }]).then((choice) => {
           for (let i = 0; i < result.length; i++) {
             if (result[i].name === choice.department) {
-               department = result[i];
+              department = result[i];
             }
           }
           db.query(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, [choice.role, choice.salary, department.id], (err, result) => {
@@ -133,8 +133,67 @@ const startTracker = function () {
             startTracker();
           });
         })
+      });
+    } else if (choice.prompt === 'Add an employee') {
+      //Pull in role table for role selection on employee
+      db.query(`Select * FROM role`, (err, result) => {
+        if (err) throw err;
+        inquirer.prompt([{
+          type: 'input',
+          name: 'firstName',
+          message: 'Enter employee first name',
+          //validating first name NOT NULL
+          validate: firstNameEnter => {
+            if (firstNameEnter) {
+              return true;
+            } else {
+              console.log('You must enter first name');
+              return false;
+            }
+          }
+        }, {
+          type: 'input',
+          name: 'lastName',
+          message: 'Enter employee last name',
+          //validating last name NOT NULL
+          validate: lastNameEnter => {
+            if (lastNameEnter) {
+              return true;
+            } else {
+              console.log('You must enter last name');
+              return false;
+            }
+          }
+        }, {
+          type: 'input',
+          name: 'manager',
+          message: 'Enter employee manager leave blank if none',
+        }, {
+          type: 'list',
+          name: 'role',
+          message: 'Choose employee role',
+          choices: () => {
+            let roleArr = [];
+            for (let i = 0; i < result.length; i++) {
+              roleArr.push(result[i].title);
+            }
+            
+            return roleArr;           
+          }
+        }
+        ]).then((choice) => {
+          for (let i = 0; i < result.length; i++) {
+            if (result[i].title === choice.role) {
+              role = result[i];
+            }
+          }
+          db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`, [choice.firstName, choice.lastName, role.id, choice.manager.id], (err, result) => {
+            if (err) throw err;
+            console.log('Added employee')
+            startTracker()
+          })
+        })
     });
-    }
-
+}
   })
 }
