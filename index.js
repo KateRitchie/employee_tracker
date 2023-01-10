@@ -171,19 +171,15 @@ const startTracker = function () {
           choices: () => {
             let roleArr = [];
             for (let i = 0; i < result.length; i++) {
-              roleArr.push(result[i].title);
+              roleArr.push({name: result[i].title, value: result[i].id});
             }
 
             return roleArr;
           }
         }
         ]).then((choice) => {
-          for (let i = 0; i < result.length; i++) {
-            if (result[i].title === choice.role) {
-              role = result[i];
-            }
-          }
-          db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`, [choice.firstName, choice.lastName, role.id, choice.manager], (err, result) => {
+            console.log(choice)
+          db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`, [choice.firstName, choice.lastName, choice.role, choice.manager], (err, result) => {
             if (err) throw err;
             console.log('Added employee')
             startTracker()
