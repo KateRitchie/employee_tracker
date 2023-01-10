@@ -13,7 +13,7 @@ To use this application
 
 ## Usage
 
-Application is invoked using node index.js from the intergrated terminal.  Walkthrough video link: [Employee Tracker Video]()
+Application is invoked using node index.js from the intergrated terminal.  Walkthrough video link: [Employee Tracker Video](https://drive.google.com/file/d/1MF6Z8UCGR3N4pYezQ2dERSa7_PI49kD2/view)
 
 ## License
 
