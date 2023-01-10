@@ -117,17 +117,13 @@ const startTracker = function () {
           choices: () => {
             let departmentArr = [];
             for (let i = 0; i < result.length; i++) {
-              departmentArr.push(result[i].name);
+              departmentArr.push({name: result[i].name, value: result[i].id});
             }
             return departmentArr;
           }
         }]).then((choice) => {
-          for (let i = 0; i < result.length; i++) {
-            if (result[i].name === choice.department) {
-              department = result[i];
-            }
-          }
-          db.query(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, [choice.role, choice.salary, department.id], (err, result) => {
+          console.log(choice)
+          db.query(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, [choice.role, choice.salary, choice.department], (err, result) => {
             if (err) throw err;
             console.log('Role added')
             startTracker();
