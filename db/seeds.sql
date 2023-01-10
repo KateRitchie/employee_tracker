@@ -19,8 +19,8 @@ VALUES
 -- Employee info in employee table ---
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES
-    ("Scott", "Roman", 1, 2),
-    ("Linda", "Kanazu", 2, 3),
-    ("Tony", "Sanzaro", 3, 1),
+    ("Scott", "Roman", 1, NULL),
+    ("Linda", "Kanazu", 2, 1),
+    ("Tony", "Sanzaro", 3, 2),
     ("Ben", "Rodriguez", 4, 3),
     ("Briana", "Simpson", 5, 2);
