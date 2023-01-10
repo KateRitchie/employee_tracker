@@ -197,7 +197,7 @@ const startTracker = function () {
           choices: () => {
             let eeArr = [];
             for (let i = 0; i < result.length; i++) {
-              eeArr.push({name: result[i].first_name, value: result[i].id});
+              eeArr.push({name: result[i].first_name});
             }
             return eeArr
           },
@@ -218,7 +218,7 @@ const startTracker = function () {
             }]).then((role) => {
               console.log(employee)
               console.log("role", role)
-              db.query(`UPDATE employee SET ? WHERE ?`, [{ role_id: role }, { first_name: employee }], (err, result) => {
+              db.query(`UPDATE employee SET ? WHERE ?`, [{ role_id: role }, {first_name: employee }], (err, result) => {
                 if (err) throw err;
                 console.log('Employee role updated')
                 startTracker();
